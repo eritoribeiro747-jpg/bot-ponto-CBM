@@ -10,7 +10,7 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 
 pontos_ativos = {}
 
-# Configuração dos IDs dos Canais (podes ajustar aqui ou criar comandos para mudar depois)
+# Configuração dos IDs dos Canais
 ID_CANAL_PONTO = 1559414525160063037
 ID_CANAL_LOGS = 1569485496781111306
 
@@ -21,7 +21,7 @@ FUSO_BR = timezone(timedelta(hours=-3))
 class CheckInView(discord.ui.View):
 
   def __init__(self, user_id):
-    super().__init__(timeout=300)  # 5 minutos para responder
+    super().__init__(timeout=300)
     self.user_id = user_id
     self.respondido = False
 
@@ -87,7 +87,6 @@ class CheckInView(discord.ui.View):
 
 
 class PainelConfigView(discord.ui.View):
-  """Painel de Configurações e Gestão do Bot"""
 
   def __init__(self):
     super().__init__(timeout=None)
@@ -138,7 +137,6 @@ class PainelConfigView(discord.ui.View):
       )
       return
 
-    # Força o tempo para disparar o check-in
     pontos_ativos[interaction.user.id]["ultimo_checkin"] = datetime.now(
         FUSO_BR
     ) - timedelta(minutes=31)
@@ -146,7 +144,7 @@ class PainelConfigView(discord.ui.View):
 
     await interaction.response.send_message(
         "🧪 **Simulação acionada!** Vê a tua DM ou o canal de ponto para"
-        " responder ao botão de verificação.",
+        " responder ao botão.",
         ephemeral=True,
     )
 
@@ -201,7 +199,7 @@ async def verificar_inativos():
             await user.send(
                 "⏰ **[Sistema de Ponto]** Você está em serviço há 30 minutos"
                 " sem interagir. Por favor, clique no botão abaixo em até **5"
-                " minutos** para confirmar presença:",
+                " minutos**:",
                 view=view,
             )
           except Exception:
@@ -305,11 +303,9 @@ async def registrar_saida(ctx):
 
 
 @bot.command(name="painel")
-@commands.has_permissions(
-    administrator=True
-)  # Opcional: restrito a administradores
 async def abrir_painel(ctx):
-  """Envia o painel interativo de configurações e controlo do bot."""
+  """Envia o painel interativo sem exigir cargos de admin para teste."""
+  print(f"[LOG] Comando !painel executado por {ctx.author} no canal {ctx.channel}")
   embed = discord.Embed(
       title="🎛️ Painel de Controlo - Sistema de Ponto",
       description=(
